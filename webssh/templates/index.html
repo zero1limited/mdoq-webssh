@@ -30,18 +30,18 @@
     <h1>{{INSTANCE_DESCRIPTION}}</h1>
     <div class="container">
       <form id="connect" action="" method="post" enctype="multipart/form-data"{% if debug %} novalidate{% end %}>
-        <div class="row">
-          <div class="col">
-            <label for="_hostname">Hostname</label>
-            <input class="form-control" type="text" id="_hostname" name="_hostname" value="{{HOSTNAME}}" disabled="disabled">
+        <!--<div class="row">-->
+          <!--<div class="col">-->
+            <!--<label for="_hostname">Hostname</label>-->
+            <!--<input class="form-control" type="text" id="_hostname" name="_hostname" value="{{HOSTNAME}}" disabled="disabled">-->
             <input type="hidden" id="hostname" name="hostname" value="{{HOSTNAME}}">
-          </div>
-          <div class="col">
-            <label for="_port">Port</label>
-            <input class="form-control" type="number" id="_port" name="_port" placeholder="22" value="{{PORT}}" min=1 max=65535 disabled="disabled">
+          <!--</div>-->
+          <!--<div class="col">-->
+            <!--<label for="_port">Port</label>-->
+            <!--<input class="form-control" type="number" id="_port" name="_port" placeholder="22" value="{{PORT}}" min=1 max=65535 disabled="disabled">-->
             <input type="hidden" id="port" name="port" value="{{PORT}}">
-          </div>
-        </div>
+          <!--</div>-->
+        <!--</div>-->
         <div class="row">
           <div class="col">
             <label for="_username">Username</label>
