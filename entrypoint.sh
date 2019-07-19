@@ -7,4 +7,6 @@ sed -i "s/{{HOSTNAME}}/${INSTANCE_HOSTNAME}/g" webssh/templates/index.html
 sed -i "s/{{PORT}}/${INSTANCE_PORT}/g" webssh/templates/index.html
 sed -i "s/{{USERNAME}}/${INSTANCE_USERNAME}/g" webssh/templates/index.html
 
-python run.py --port=${PORT}
+RUN_OPTIONS="--port=${PORT} "
+
+python run.py --port=${PORT} --debug=true --logging=debug >>/var/log/web-ssh.log 2>&1
