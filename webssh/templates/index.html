@@ -2,77 +2,93 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}}</title>
     <link href="static/img/favicon.png" rel="icon" type="image/png">
     <link href="static/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/xterm.min.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/fullscreen.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet"/>
     <style>
-      .row {
-        margin-top: 15px;
-        margin-bottom: 10px;
-      }
-
-      .container {
-        margin-top: 20px;
-      }
-
-      .btn {
-        margin-top: 15px;
-      }
-
-      .btn-danger {
-        margin-left: 5px;
-      }
+      body {font-family: "Fira Sans", sans-serif;font-size:14px;color:#333}
+      .logo {max-width: 140px}
+      .btn-done{background:#13afcc;border-color:#13afcc}
+      .btn-done:hover{background:#13afcc;border-color:#13afcc}
+      .form-control {border-radius:0}
     </style>
   </head>
   <body>
-    <h1>{{INSTANCE_DESCRIPTION}}</h1>
-    <div class="container">
-      <form id="connect" action="" method="post" enctype="multipart/form-data"{% if debug %} novalidate{% end %}>
-        <!--<div class="row">-->
-          <!--<div class="col">-->
-            <!--<label for="_hostname">Hostname</label>-->
-            <!--<input class="form-control" type="text" id="_hostname" name="_hostname" value="{{HOSTNAME}}" disabled="disabled">-->
-            <input type="hidden" id="hostname" name="hostname" value="{{HOSTNAME}}">
-          <!--</div>-->
-          <!--<div class="col">-->
-            <!--<label for="_port">Port</label>-->
-            <!--<input class="form-control" type="number" id="_port" name="_port" placeholder="22" value="{{PORT}}" min=1 max=65535 disabled="disabled">-->
-            <input type="hidden" id="port" name="port" value="{{PORT}}">
-          <!--</div>-->
-        <!--</div>-->
-        <div class="row">
-          <div class="col">
-            <label for="_username">Username</label>
-            <input class="form-control" type="text" id="_username" name="_username" value="{{USERNAME}}" disabled="disabled" />
-            <input type="hidden" id="username" name="username" value="{{USERNAME}}" />
-            <input type="hidden" id="password" name="password" value="" />
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 p-3 text-center border-bottom">
+          <a href="https://mdoq.io"><img src="https://mdoq.io/img/logo-01.svg" class="logo" alt="MDOQ" title="MDOQ" /></a>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row justify-content-center">
+        <div class="col-12 col-lg-12 px-lg-5">
+          <h4 class="my-4">{{INSTANCE_DESCRIPTION}}</h4>
+          <form id="connect" action="" method="post" enctype="multipart/form-data"{% if debug %} novalidate{% end %}>
+            <div class="row d-none">
+              <div class="col">
+                <label for="_hostname">Hostname</label>
+                <input class="form-control" type="text" id="_hostname" name="_hostname" value="{{HOSTNAME}}" disabled="disabled">
+                <input type="hidden" id="hostname" name="hostname" value="{{HOSTNAME}}">
+              </div>
+              <div class="col">
+                <label for="_port">Port</label>
+                <input class="form-control" type="number" id="_port" name="_port" placeholder="22" value="{{PORT}}" min=1 max=65535 disabled="disabled">
+                <input type="hidden" id="port" name="port" value="{{PORT}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-md-4 mb-3">
+                <label class="font-weight-bold" for="_username">Username</label>
+                <input class="form-control" type="text" id="_username" name="_username" value="{{USERNAME}}" disabled="disabled" />
+                <input type="hidden" id="username" name="username" value="{{USERNAME}}" />
+                <input type="hidden" id="password" name="password" value="" />
+              </div>
+
+              <div class="col-12 col-md-4 mb-3">
+                <label class="font-weight-bold" for="Username">Private Key</label>
+                <input class="form-control px-0 border-0" type="file" id="privatekey" name="privatekey" value="">
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label class="font-weight-bold" for="passphrase">Passphrase</label>
+                <input class="form-control" type="password" name="passphrase" id="passphrase" value="">
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-12 text-center">
+                <input type="hidden" id="totp" name="totp" value="">
+
+                <span class="d-none">{% module xsrf_form_html() %}</span>
+
+                <div class="row">
+                  <div class="col-4 col-lg-2">
+                    <button type="reset" class="btn btn-block btn-lg btn-outline-danger">Reset</button>
+                  </div>
+                  <div class="col-8 col-lg-10">
+                    <button type="submit" class="btn btn-block btn-lg btn-primary btn-done">Connect</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="row my-3">
+          <div class="col-12">
+            <div id="status" style="color: red;"></div>
+            <div id="terminal"></div>
           </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <label for="Username">Private Key</label>
-            <input class="form-control" type="file" id="privatekey" name="privatekey" value="">
-          </div>
-          <div class="col">
-            <label for="passphrase">Passphrase</label>
-            <input class="form-control" type="password" name="passphrase" id="passphrase" value="">
-          </div>
-        </div>
-        <input type="hidden" id="totp" name="totp" value="">
-        {% module xsrf_form_html() %}
-        <button type="submit" class="btn btn-primary">Connect</button>
-        <button type="reset" class="btn btn-danger">Reset</button>
-      </form>
-
+      </div>
+      </div>
     </div>
-
-    <div class="container">
-      <div id="status" style="color: red;"></div>
-      <div id="terminal"></div>
-    </div>
-
     <script src="static/js/jquery.min.js"></script>
     <script src="static/js/popper.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
