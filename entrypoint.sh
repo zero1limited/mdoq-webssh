@@ -1,5 +1,7 @@
 #!/bin/sh -xe
 
+printenv
+
 # Set Variables in template file
 sed -i "s/{{TITLE}}/${TITLE}/g" webssh/templates/index.html
 sed -i "s/{{INSTANCE_DESCRIPTION}}/${INSTANCE_DESCRIPTION}/g" webssh/templates/index.html
