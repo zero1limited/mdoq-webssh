@@ -9,4 +9,4 @@ sed -i "s/{{USERNAME}}/${INSTANCE_USERNAME}/g" webssh/templates/index.html
 
 RUN_OPTIONS="--port=${PORT} "
 
-python run.py --port=${PORT} --debug=true --logging=debug >>/var/log/web-ssh.log 2>&1
+python run.py --port=${PORT} --debug=true --logging=debug 2>&1
