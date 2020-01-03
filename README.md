@@ -15,7 +15,7 @@ A simple web application to be used as an ssh client to connect to your ssh serv
 * SSH password authentication supported, including empty password.
 * SSH public-key authentication supported, including DSA RSA ECDSA Ed25519 keys.
 * Encrypted keys supported.
-* Two-Factor Authentication(time-based one-time password) supported.
+* Two-Factor Authentication (time-based one-time password) supported.
 * Fullscreen terminal supported.
 * Terminal window resizable.
 * Auto detect the ssh server's default encoding.
@@ -121,9 +121,9 @@ Custom font family usage example:
 
 Support passing arguments by url (query or fragment) like following examples:
 
-Passing form data
+Passing form data (password must be encoded in base64, privatekey not supported)
 ```bash
-http://localhost:8888/?hostname=xx&username=yy
+http://localhost:8888/?hostname=xx&username=yy&password=str_base64_encoded
 ```
 
 Passing a terminal background color
@@ -141,6 +141,16 @@ Passing an encoding
 http://localhost:8888/#encoding=gbk
 ```
 
+Passing a command executed right after login
+```bash
+http://localhost:8888/?command=pwd
+```
+
+Passing a terminal type
+```bash
+http://localhost:8888/?term=xterm-256color
+```
+
 ### Use Docker
 
 Start up the app
@@ -154,6 +164,11 @@ docker-compose down
 ```
 
 ### Tests
+
+Requirements
+```
+pip install pytest pytest-cov codecov flake8 mock
+```
 
 Use unittest to run all tests
 ```

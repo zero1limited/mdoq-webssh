@@ -7,7 +7,7 @@ import tornado.gen
 from tornado.testing import AsyncHTTPTestCase
 from tornado.httpclient import HTTPError
 from tornado.options import options
-from tests.sshserver import run_ssh_server, banner
+from tests.sshserver import run_ssh_server, banner, Server
 from tests.utils import encode_multipart_formdata, read_file, make_tests_data_path  # noqa
 from webssh import handler
 from webssh.main import make_app, make_handlers
@@ -25,6 +25,7 @@ except ImportError:
 
 handler.DELAY = 0.1
 swallow_http_errors = handler.swallow_http_errors
+server_encodings = {e.strip() for e in Server.encodings}
 
 
 class TestAppBase(AsyncHTTPTestCase):
@@ -515,6 +516,7 @@ class OtherTestBase(TestAppBase):
     tdstream = ''
     maxconn = 20
     origin = 'same'
+    encodings = []
     body = {
         'hostname': '127.0.0.1',
         'port': '',
@@ -543,7 +545,8 @@ class OtherTestBase(TestAppBase):
         OtherTestBase.sshserver_port += 1
 
         t = threading.Thread(
-            target=run_ssh_server, args=(self.sshserver_port, self.running)
+            target=run_ssh_server,
+            args=(self.sshserver_port, self.running, self.encodings)
         )
         t.setDaemon(True)
         t.start()
@@ -762,3 +765,28 @@ class TestAppWithCrossOriginOperation(OtherTestBase):
         self.assertEqual(
             response.headers.get('Access-Control-Allow-Origin'), self.origin
         )
+
+
+class TestAppWithBadEncoding(OtherTestBase):
+
+    encodings = [u'\u7f16\u7801']
+
+    @tornado.testing.gen_test
+    def test_app_with_a_bad_encoding(self):
+        response = yield self.async_post('/', self.body)
+        dic = json.loads(to_str(response.body))
+        self.assert_status_none(dic)
+        self.assertIn(dic['encoding'], server_encodings)
+
+
+class TestAppWithUnknownEncoding(OtherTestBase):
+
+    encodings = [u'\u7f16\u7801', u'UnknownEncoding']
+
+    @tornado.testing.gen_test
+    def test_app_with_a_unknown_encoding(self):
+        response = yield self.async_post('/', self.body)
+        self.assert_status_none(json.loads(to_str(response.body)))
+        dic = json.loads(to_str(response.body))
+        self.assert_status_none(dic)
+        self.assertEqual(dic['encoding'], 'utf-8')

@@ -36,7 +36,10 @@ def to_int(string):
 
 
 def to_ip_address(ipstr):
-    return ipaddress.ip_address(to_str(ipstr))
+    ip = to_str(ipstr)
+    if ip.startswith('fe80::'):
+        ip = ip.split('%')[0]
+    return ipaddress.ip_address(ip)
 
 
 def is_valid_ip_address(ipstr):
@@ -49,6 +52,14 @@ def is_valid_ip_address(ipstr):
 
 def is_valid_port(port):
     return 0 < port < 65536
+
+
+def is_valid_encoding(encoding):
+    try:
+        u'test'.encode(encoding)
+    except LookupError:
+        return False
+    return True
 
 
 def is_ip_hostname(hostname):

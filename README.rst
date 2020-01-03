@@ -17,7 +17,7 @@ Features
 -  SSH public-key authentication supported, including DSA RSA ECDSA
    Ed25519 keys.
 -  Encrypted keys supported.
--  Two-Factor Authentication(time-based one-time password) supported.
+-  Two-Factor Authentication (time-based one-time password) supported.
 -  Fullscreen terminal supported.
 -  Terminal window resizable.
 -  Auto detect the ssh server's default encoding.
@@ -130,11 +130,12 @@ URL Arguments
 Support passing arguments by url (query or fragment) like following
 examples:
 
-Passing form data
+Passing form data (password must be encoded in base64, privatekey not
+supported)
 
 .. code:: bash
 
-    http://localhost:8888/?hostname=xx&username=yy
+    http://localhost:8888/?hostname=xx&username=yy&password=str_base64_encoded
 
 Passing a terminal background color
 
@@ -154,6 +155,18 @@ Passing an encoding
 
     http://localhost:8888/#encoding=gbk
 
+Passing a command executed right after login
+
+.. code:: bash
+
+    http://localhost:8888/?command=pwd
+
+Passing a terminal type
+
+.. code:: bash
+
+    http://localhost:8888/?term=xterm-256color
+
 Use Docker
 ~~~~~~~~~~
 
@@ -171,6 +184,12 @@ Tear down the app
 
 Tests
 ~~~~~
+
+Requirements
+
+::
+
+    pip install pytest pytest-cov codecov flake8 mock
 
 Use unittest to run all tests
 
