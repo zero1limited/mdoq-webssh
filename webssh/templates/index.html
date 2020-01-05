@@ -35,21 +35,21 @@
                         <div class="row d-none">
                             <div class="col">
                                 <label for="_hostname">Hostname</label>
-                                <input class="form-control" type="text" id="_hostname" name="_hostname" value="{{ default .Env.HOSTNAME "" }}" disabled="disabled">
-                                <input type="hidden" id="hostname" name="hostname" value="{{ default .Env.HOSTNAME "" }}" readonly="readonly">
+                                <input class="form-control" type="text" id="_hostname" name="_hostname" value="{{ default .Env.INSTANCE_HOSTNAME "" }}" disabled="disabled">
+                                <input type="hidden" id="hostname" name="hostname" value="{{ default .Env.INSTANCE_HOSTNAME "" }}" readonly="readonly">
                             </div>
                             <div class="col">
                                 <label for="_port">Port</label>
-                                <input class="form-control" type="number" id="_port" name="_port" placeholder="22" value="{{ default .Env.PORT "" }}" min=1 max=65535 disabled="disabled">
-                                <input type="hidden" id="port" name="port" value="{{ default .Env.PORT "" }}">
+                                <input class="form-control" type="number" id="_port" name="_port" placeholder="22" value="{{ default .Env.INSTANCE_PORT "" }}" min=1 max=65535 disabled="disabled">
+                                <input type="hidden" id="port" name="port" value="{{ default .Env.INSTANCE_PORT "" }}">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-12 col-md-4 mb-3">
                                 <label class="font-weight-bold" for="_username">Username</label>
-                                <input class="form-control" type="text" id="_username" name="_username" value="{{ default .Env.USERNAME "" }}" disabled="disabled" />
-                                <input type="hidden" id="username" name="username" value="{{ default .Env.USERNAME "" }}" />
+                                <input class="form-control" type="text" id="_username" name="_username" value="{{ default .Env.INSTANCE_USERNAME "" }}" disabled="disabled" />
+                                <input type="hidden" id="username" name="username" value="{{ default .Env.INSTANCE_USERNAME "" }}" />
                                 <input type="hidden" id="password" name="password" value="" />
                             </div>
 
