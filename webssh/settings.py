@@ -7,7 +7,9 @@ from tornado.options import define
 from webssh.policy import (
     load_host_keys, get_policy_class, check_policy_setting
 )
-from webssh.utils import to_ip_address, parse_origin_from_url
+from webssh.utils import (
+    to_ip_address, parse_origin_from_url, is_valid_encoding
+)
 from webssh._version import __version__
 
 
@@ -40,15 +42,35 @@ define('origin', default='same', help='''Origin policy,
 '<domains>': custom domains policy, matches any domain in the <domains> list
 separated by comma;
 '*': wildcard policy, matches any domain, allowed in debug mode only.''')
-define('wpintvl', type=int, default=0, help='Websocket ping interval')
+define('wpintvl', type=float, default=0, help='Websocket ping interval')
+define('timeout', type=float, default=3, help='SSH connection timeout')
+define('delay', type=float, default=3, help='The delay to call recycle_worker')
 define('maxconn', type=int, default=20,
        help='Maximum live connections (ssh sessions) per client')
+define('font', default='', help='custom font filename')
+define('encoding', default='',
+       help='''The default character encoding of ssh servers.
+Example: --encoding='utf-8' to solve the problem with some switches&routers''')
 define('version', type=bool, help='Show version information',
        callback=print_version)
 
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+font_dirs = ['webssh', 'static', 'css', 'fonts']
 max_body_size = 1 * 1024 * 1024
+
+
+class Font(object):
+
+    def __init__(self, filename, dirs):
+        self.family = self.get_family(filename)
+        self.url = self.get_url(filename, dirs)
+
+    def get_family(self, filename):
+        return filename.split('.')[0]
+
+    def get_url(self, filename, dirs):
+        return os.path.join(*(dirs + [filename]))
 
 
 def get_app_settings(options):
@@ -58,6 +80,11 @@ def get_app_settings(options):
         websocket_ping_interval=options.wpintvl,
         debug=options.debug,
         xsrf_cookies=options.xsrf,
+        font=Font(
+            get_font_filename(options.font,
+                              os.path.join(base_dir, *font_dirs)),
+            font_dirs[1:]
+        ),
         origin_policy=get_origin_setting(options)
     )
     return settings
@@ -150,3 +177,22 @@ def get_origin_setting(options):
         raise ValueError('Empty origin list')
 
     return origins
+
+
+def get_font_filename(font, font_dir):
+    filenames = {f for f in os.listdir(font_dir) if not f.startswith('.')
+                 and os.path.isfile(os.path.join(font_dir, f))}
+    if font:
+        if font not in filenames:
+            raise ValueError(
+                'Font file {!r} not found'.format(os.path.join(font_dir, font))
+            )
+    elif filenames:
+        font = filenames.pop()
+
+    return font
+
+
+def check_encoding_setting(encoding):
+    if encoding and not is_valid_encoding(encoding):
+        raise ValueError('Unknown character encoding {!r}.'.format(encoding))
